@@ -1,0 +1,50 @@
+<mujoco model="drone_pendulum_2d">
+  <option timestep="0.001" gravity="0 0 -9.81" integrator="RK4"/>
+
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3"/>
+  </visual>
+
+  <default>
+    <geom contype="0" conaffinity="0"/>
+  </default>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.6 0.7 0.9" rgb2="0.1 0.1 0.2" width="256" height="256"/>
+    <texture name="grid" type="2d" builtin="checker" rgb1="0.2 0.2 0.2" rgb2="0.3 0.3 0.3" width="300" height="300"/>
+    <material name="grid" texture="grid" texrepeat="20 20" reflectance="0.1"/>
+  </asset>
+
+  <worldbody>
+    <light pos="0 0 4" dir="0 0 -1"/>
+    <geom name="floor" type="plane" pos="0 0 0" size="10 10 0.1" material="grid"/>
+
+    <body name="drone" pos="0 0 1">
+      <joint name="slide_x" type="slide" axis="1 0 0"/>
+      <joint name="slide_z" type="slide" axis="0 0 1"/>
+      <joint name="pitch_y" type="hinge" axis="0 1 0"/>
+
+      <geom name="body"   type="box"      size="0.15 0.05 0.03" rgba="0.2 0.3 0.8 1" mass="0.6"/>
+      <geom name="arm"    type="box"      size="0.22 0.015 0.01" rgba="0.2 0.2 0.2 1" mass="0.05"/>
+      <geom name="rotorL" type="cylinder" pos="-0.2 0 0.03" size="0.06 0.005" rgba="0.1 0.1 0.1 1" mass="0.05"/>
+      <geom name="rotorR" type="cylinder" pos=" 0.2 0 0.03" size="0.06 0.005" rgba="0.1 0.1 0.1 1" mass="0.05"/>
+
+      <site name="thrustL" pos="-0.2 0 0.03" size="0.012" rgba="1 0 0 1"/>
+      <site name="thrustR" pos=" 0.2 0 0.03" size="0.012" rgba="1 0 0 1"/>
+
+      <geom name="stick" type="cylinder" fromto="0 0 0 0 0.18 0" size="0.01" rgba="0.7 0.7 0.7 1" mass="0.02"/>
+
+      <body name="pendulum" pos="0 0.18 0">
+        <joint name="phi" type="hinge" axis="0 1 0"/>
+        <geom name="rod" type="capsule" fromto="0 0 0 0 0 -0.30" size="0.012" rgba="0.9 0.9 0.9 1" mass="0.05"/>
+        <geom name="bob" type="sphere"  pos="0 0 -0.30" size="0.035" rgba="0.9 0.2 0.2 1" mass="0.15"/>
+        <site name="tip" pos="0 0 -0.30" size="0.012"/>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <general name="thrustL" site="thrustL" gear="0 0 1 0 0 0" ctrlrange="0 20"/>
+    <general name="thrustR" site="thrustR" gear="0 0 1 0 0 0" ctrlrange="0 20"/>
+  </actuator>
+</mujoco>
